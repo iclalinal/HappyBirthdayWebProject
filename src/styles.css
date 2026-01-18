@@ -11,19 +11,32 @@ html, body, #root {
   -webkit-user-select: none;
   user-select: none;
   -webkit-font-smoothing: antialiased;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 /* App Container */
 .app {
   width: 100%;
   height: 100%;
-  background: #0a0a1a;
+  background: #0d0d12;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
   overflow: hidden;
   position: relative;
+}
+
+/* Film grain overlay */
+.app::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  z-index: 100;
 }
 
 /* Ballpit Background */
@@ -78,7 +91,7 @@ html, body, #root {
   display: flex;
   flex-direction: column;
   align-items: center;
-  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6));
+  filter: drop-shadow(0 8px 16px rgba(205, 127, 50, 0.2));
 }
 
 /* Pasta Katmanları */
@@ -88,20 +101,23 @@ html, body, #root {
   justify-content: center;
   border-radius: 12px 12px 0 0;
   position: relative;
-  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.2);
+  background: transparent;
+  border: 2px solid #cd7f32;
+  border-bottom: none;
+  box-shadow: none;
 }
 
 .cake-layer-1 {
   width: 180px;
   height: 50px;
-  background: linear-gradient(180deg, #f472b6 0%, #ec4899 100%);
+  background: transparent;
   border-radius: 16px 16px 8px 8px;
 }
 
 .cake-layer-2 {
   width: 220px;
   height: 55px;
-  background: linear-gradient(180deg, #f9a8d4 0%, #f472b6 100%);
+  background: transparent;
   border-radius: 20px 20px 10px 10px;
   margin-top: -12px;
 }
@@ -109,19 +125,21 @@ html, body, #root {
 .cake-layer-3 {
   width: 260px;
   height: 60px;
-  background: linear-gradient(180deg, #fbb6ce 0%, #f9a8d4 100%);
+  background: transparent;
   border-radius: 24px 24px 12px 12px;
   margin-top: -15px;
+  border-bottom: 1px solid #cd7f32 !important; 
 }
 
 /* Pasta Top Dekorasyon */
 .cake-decoration {
   width: 200px;
   height: 15px;
-  background: linear-gradient(90deg, transparent, #fde68a 50%, transparent);
+  background: linear-gradient(90deg, transparent, #f7e7ce 50%, transparent);
   border-radius: 50%;
   margin-bottom: -8px;
-  filter: blur(3px);
+  filter: blur(2px);
+  opacity: 0.4;
   z-index: 1;
 }
 
@@ -143,13 +161,25 @@ html, body, #root {
 /* Candle - Removed duplicate, now using grid-based positioning */
 
 .candle-body {
-  width: 14px;
+  width: 12px;
   height: 42px;
-  background: linear-gradient(180deg, #fde68a 0%, #fcd34d 100%);
+  background: rgba(205, 127, 50, 0.05); /* Çok hafif bir dolgu */
   border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(253, 230, 138, 0.3);
+  border: 1px solid rgba(205, 127, 50, 0.8); /* Çizgiyi incelttik (2px -> 1px) */
 }
 
+.cake-layer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px 12px 0 0;
+  position: relative;
+  /* Hafif yukarıdan aşağıya kararan degrade */
+  background: linear-gradient(to bottom, rgba(205, 127, 50, 0.08), transparent);
+  border: 1px solid #cd7f32; /* Çizgiyi incelttik */
+  border-bottom: none;
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.5); /* İç gölge ile hacim */
+}
 .wick {
   width: 2px;
   height: 6px;
@@ -158,25 +188,32 @@ html, body, #root {
 
 /* Flame */
 .flame {
-  width: 18px;
-  height: 26px;
+  width: 14px;
+  height: 22px;
   margin-bottom: 4px;
-  background: radial-gradient(circle at 50% 60%, #fde68a, #f97316);
-  border-radius: 50%;
-  -webkit-animation: flicker 0.15s infinite alternate;
-  animation: flicker 0.15s infinite alternate;
-  will-change: transform;
-  box-shadow: 0 0 12px rgba(255, 180, 80, 0.8);
+  background: rgba(255, 180, 60, 0.9); /* İçi dolu renk */
+  border-radius: 50% 50% 35% 35%; /* Hafif damla şekli */
+  border: none; /* Kenarlığı kaldır */
+  box-shadow: 
+    0 0 10px 2px rgba(255, 160, 0, 0.6), /* İç parıltı */
+    0 -5px 20px 5px rgba(255, 100, 0, 0.4); /* Dış yayılma */
+  animation: flicker 2s infinite alternate ease-in-out; /* Daha yavaş, sakin yanma */
 }
 
 @keyframes flicker {
   0% {
-    transform: scale(1) rotate(-1deg);
-    opacity: 0.9;
+    transform: scale(1) rotate(-2deg);
+    opacity: 0.8;
+    filter: blur(0px);
+  }
+  50% {
+    opacity: 1;
+    filter: blur(1px);
   }
   100% {
-    transform: scale(1.06) rotate(1deg);
-    opacity: 1;
+    transform: scale(1.1) rotate(2deg);
+    opacity: 0.8;
+    filter: blur(0px);
   }
 }
 
@@ -207,8 +244,8 @@ html, body, #root {
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.95);
-  backdrop-filter: blur(4px);
+  background: rgba(13, 13, 18, 0.98);
+  backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -218,27 +255,29 @@ html, body, #root {
 }
 
 .overlay-content {
-  color: white;
-  font-size: clamp(18px, 5vw, 28px);
-  padding: clamp(16px, 4vw, 36px) clamp(24px, 6vw, 48px);
-  border-radius: 24px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.05));
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #f7e7ce;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(20px, 5vw, 32px);
+  font-weight: 400;
+  padding: clamp(16px, 4vw, 36px) clamp(32px, 8vw, 56px);
+  border-radius: 2px;
+  background: none;
+  border: 1px solid rgba(205, 127, 50, 0.2);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
-  -webkit-animation: pulse 1.5s infinite;
-  animation: pulse 1.5s infinite;
+  -webkit-animation: gentlePulse 2.5s ease-in-out infinite;
+  animation: gentlePulse 2.5s ease-in-out infinite;
   -webkit-user-select: none;
   user-select: none;
   text-align: center;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.08); opacity: 1; }
-  100% { transform: scale(1); opacity: 0.8; }
+@keyframes gentlePulse {
+  0% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.04); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.7; }
 }
 
 @keyframes fadeIn {

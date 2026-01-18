@@ -51,7 +51,7 @@ function App() {
         {!started && (
           <div className="overlay" onClick={handleStart}>
             <div className="overlay-content">
-              🎂 Muma üflemek için dokun
+              ✨ Bir dilek tut
             </div>
           </div>
         )}

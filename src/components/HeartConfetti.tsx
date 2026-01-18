@@ -24,21 +24,21 @@ export default function HeartConfetti() {
     const createHeart = (): Heart => ({
       x: Math.random() * canvas.width,
       y: -20,
-      size: 10 + Math.random() * 10,
-      speed: 1 + Math.random() * 3,
+      size: 8 + Math.random() * 8,
+      speed: 0.3 + Math.random() * 1,
       rotation: Math.random() * Math.PI,
-      rotationSpeed: (Math.random() - 0.5) * 0.05,
-      opacity: 0.7 + Math.random() * 0.3,
+      rotationSpeed: (Math.random() - 0.5) * 0.03,
+      opacity: 0.5 + Math.random() * 0.4,
     });
 
-    hearts.current = Array.from({ length: 80 }, createHeart);
+    hearts.current = Array.from({ length: 120 }, createHeart);
 
     const drawHeart = (h: Heart) => {
       ctx.save();
       ctx.translate(h.x, h.y);
       ctx.rotate(h.rotation);
       ctx.globalAlpha = h.opacity;
-      ctx.fillStyle = '#ff5fa2';
+      ctx.fillStyle = '#c9a89f';
 
       ctx.beginPath();
       ctx.moveTo(0, h.size / 4);
