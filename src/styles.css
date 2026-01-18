@@ -1,0 +1,92 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+}
+
+/* Sahne */
+.app {
+  width: 100%;
+  height: 100%;
+  background: #0f172a; /* gece tonu */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Cake */
+.cake-container {
+  position: relative;
+}
+
+.cake {
+  width: 220px;
+  height: 150px;
+  position: relative;
+}
+
+.cake-top {
+  width: 220px;
+  height: 45px;
+  background: #f9a8d4;
+  border-radius: 24px 24px 12px 12px;
+}
+
+.cake-body {
+  width: 220px;
+  height: 105px;
+  background: #f472b6;
+  border-radius: 0 0 24px 24px;
+}
+
+/* Candle */
+.candle {
+  position: absolute;
+  top: -68px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.candle-body {
+  width: 14px;
+  height: 42px;
+  background: #fde68a;
+  border-radius: 4px;
+}
+
+.wick {
+  width: 2px;
+  height: 6px;
+  background: #1f2937;
+}
+
+/* Flame */
+.flame {
+  width: 18px;
+  height: 26px;
+  margin-bottom: 4px;
+  background: radial-gradient(circle at 50% 60%, #fde68a, #f97316);
+  border-radius: 50%;
+  animation: flicker 0.15s infinite alternate;
+}
+
+@keyframes flicker {
+  0% {
+    transform: scale(1) rotate(-1deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.06) rotate(1deg);
+    opacity: 1;
+  }
+}
