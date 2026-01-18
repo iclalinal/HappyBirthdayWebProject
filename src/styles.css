@@ -1,4 +1,3 @@
-/* Reset */
 * {
   margin: 0;
   padding: 0;
@@ -90,3 +89,25 @@ html, body, #root {
     opacity: 1;
   }
 }
+
+/* Smoke */
+.smoke {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(200, 200, 200, 0.6);
+  animation: smoke 1.2s ease-out forwards;
+  margin-bottom: 6px;
+}
+
+@keyframes smoke {
+  0% {
+    opacity: 0.8;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px) scale(1.8);
+  }
+}
+
