@@ -122,7 +122,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1;
+  z-index: 5;
 }
 
 /* Envelope Design */
@@ -229,5 +229,50 @@
   100% {
     opacity: 1;
     transform: scale(1) translateY(0);
+  }
+}
+
+/* Responsive - Tablet */
+@media (max-width: 768px) {
+  .envelope-body {
+    width: 260px;
+    height: 170px;
+  }
+
+  .card-slot {
+    width: 180px;
+    height: 240px;
+  }
+
+  .card-slot.card-out {
+    transform: translateX(-50%) translateY(-160px);
+  }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 480px) {
+  .envelope-body {
+    width: 220px;
+    height: 150px;
+  }
+
+  .envelope-design {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+
+  .card-slot {
+    width: 150px;
+    height: 200px;
+  }
+
+  .card-slot.card-out {
+    transform: translateX(-50%) translateY(-140px);
+  }
+
+  .click-hint {
+    font-size: 12px;
+    bottom: -35px;
   }
 }
