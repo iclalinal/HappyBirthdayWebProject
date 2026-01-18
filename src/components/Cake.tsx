@@ -1,9 +1,13 @@
 import Candle from './Candle';
 
-export default function Cake() {
+interface Props {
+  started: boolean;
+}
+
+export default function Cake({ started }: Props) {
   return (
     <div className="cake-container">
-      <Candle />
+      <Candle started={started} />
       <div className="cake">
         <div className="cake-top" />
         <div className="cake-body" />

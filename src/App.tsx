@@ -1,29 +1,21 @@
-import { useEffect, useRef } from 'react';
+import { useState } from 'react';
 import Cake from './components/Cake';
 import './styles.css';
 
 function App() {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  useEffect(() => {
-    const audio = new Audio('/sounds/candle.mp3');
-    audio.loop = true;
-    audio.volume = 0.1;
-    audioRef.current = audio;
-
-    audio.play().catch(() => {
-      // Autoplay policy: ilk etkileşime kadar sessizce geç
-    });
-
-    return () => {
-      audio.pause();
-      audioRef.current = null;
-    };
-  }, []);
+  const [started, setStarted] = useState(false);
 
   return (
     <div className="app">
-      <Cake />
+      {!started && (
+        <div className="overlay" onClick={() => setStarted(true)}>
+          <div className="overlay-content">
+            🎂 Muma üflemek için dokun
+          </div>
+        </div>
+      )}
+
+      <Cake started={started} />
     </div>
   );
 }
