@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import Cake from './components/Cake';
 import LightRays from './components/LightRays';
+import HeartConfetti from './components/HeartConfetti';
 import { useMicrophone } from './hooks/useMicrophone';
 import './styles.css';
 
 function App() {
   const [started, setStarted] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
   const { volume, start, stop } = useMicrophone();
 
   const handleStart = () => {
@@ -13,8 +15,20 @@ function App() {
     start();
   };
 
+  const handleAllBlown = () => {
+    setShowConfetti(true);
+
+    setTimeout(() => {
+      setShowConfetti(false);
+      stop();
+      // Overlay kapanır ama sayfa açık kalır
+    }, 6000);
+  };
+
   return (
     <div className="app">
+      {showConfetti && <HeartConfetti />}
+
       <div className="background-rays">
         <LightRays
           raysOrigin="top-center"
@@ -38,7 +52,11 @@ function App() {
           </div>
         )}
 
-        <Cake started={started} volume={volume} onAllBlown={stop} />
+        <Cake
+          started={started}
+          volume={volume}
+          onAllBlown={handleAllBlown}
+        />
       </div>
     </div>
   );

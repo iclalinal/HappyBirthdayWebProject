@@ -55,14 +55,20 @@ export function useMicrophone() {
 
   const stop = () => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    audioContextRef.current?.close();
+    // AudioContext'i kapatma - ses oynatması için gerekli olabilir
+    // Sadece RAF'ı ve started state'i kapat
     setStarted(false);
   };
 
   const playSound = async () => {
     try {
-      // iOS uyumlu ses oynatma
-      const audioContext = audioContextRef.current || new (window.AudioContext || (window as any).webkitAudioContext)();
+      // AudioContext'i reuse et, kapalı değilse
+      if (!audioContextRef.current || audioContextRef.current.state === 'closed') {
+        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      }
+      
+      const audioContext = audioContextRef.current;
+      await audioContext.resume(); // Emin olmak için
       
       const response = await fetch('/sounds/candle.mp3');
       const arrayBuffer = await response.arrayBuffer();
