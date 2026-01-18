@@ -1,73 +1,49 @@
-# React + TypeScript + Vite
+# 🎂 Happy Birthday Web Project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Bu proje, sevdikleriniz için interaktif ve eğlenceli bir doğum günü kutlaması sunan bir web uygulamasıdır. React ve modern web teknolojileri kullanılarak geliştirilmiştir.\
+🔗 **Canlı Demo:** [Projeyi Görüntüle](https://iclalinal.github.io/HappyBirthdayWebProject/)
 
-Currently, two official plugins are available:
+## 🚀 Özellikler
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🖥️ Modern frontend: React + Vite
+- 🎵 Sesli kutlama desteği (jenerik / isme özel)
+- ✨ Basit ve kullanıcı dostu tasarım
+- 📦 Kaynak kod GitHub üzerinde açık
 
-## React Compiler
+## 📦 Kurulum ve Çalıştırma
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Projeyi yerel ortamında çalıştırmak için aşağıdaki adımları izleyebilirsin:
 
-## Expanding the ESLint configuration
+1.  **Projeyi klonla:**
+    ```bash
+    git clone [https://github.com/iclalinal/HappyBirthdayWebProject.git](https://github.com/iclalinal/HappyBirthdayWebProject.git)
+    cd HappyBirthdayWebProject
+    ```
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+2.  **Bağımlılıkları yükle:**
+    ```bash
+    npm install
+    ```
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+3.  **Geliştirme sunucusunu başlat:**
+    ```bash
+    npm run dev
+    ```
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+4.  Tarayıcıda verilen localhost adresine git (genellikle `http://localhost:5173`).
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🛠️ Kullanılan Teknolojiler
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+* **React 19** & **TypeScript**
+* **Vite** (Hızlı geliştirme ve build için)
+* **Three.js / OGL** (3D grafikler için)
+* **Web Audio API** (Mikrofon entegrasyonu için)
+* **CSS Animations**
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## ⚠️ Önemli Not
+
+Uygulamanın ana özelliği olan "mum üfleme" fonksiyonunun çalışması için tarayıcınızın **mikrofon iznine** ihtiyacı vardır. Lütfen siteyi açtığınızda mikrofon erişimine izin verin.
+
+---
+*İyi ki doğdun! 🥳*
