@@ -1,29 +1,25 @@
 import { useEffect, useState } from 'react';
-import { useMicrophone } from '../hooks/useMicrophone';
 
 interface Props {
-  started: boolean;
+  index?: number;
+  volume: number;
+  onBlown: () => void;
 }
 
-export default function Candle({ started }: Props) {
-  const { volume, start, playSound } = useMicrophone();
+export default function Candle({ index = 0, volume, onBlown }: Props) {
   const [isOut, setIsOut] = useState(false);
-
-  useEffect(() => {
-    if (started) start();
-  }, [started, start]);
 
   useEffect(() => {
     if (!isOut && volume > 60) {
       setIsOut(true);
-      playSound(); // Mum söndüğünde ses çal
+      onBlown();
     }
-  }, [volume, isOut, playSound]);
+  }, [volume, isOut, onBlown]);
 
   const scale = Math.max(0.6, 1 - volume / 100);
 
   return (
-    <div className="candle">
+    <div className="candle" style={{ gridColumn: index + 1 }}>
       {!isOut && <div className="flame" style={{ transform: `scale(${scale})` }} />}
       {isOut && <div className="smoke" />}
       <div className="wick" />
