@@ -25,7 +25,7 @@ export default function HeartConfetti() {
       x: Math.random() * canvas.width,
       y: -20,
       size: 10 + Math.random() * 10,
-      speed: 0.5 + Math.random() * 1.5,
+      speed: 1 + Math.random() * 3,
       rotation: Math.random() * Math.PI,
       rotationSpeed: (Math.random() - 0.5) * 0.05,
       opacity: 0.7 + Math.random() * 0.3,
@@ -82,7 +82,7 @@ export default function HeartConfetti() {
         position: 'fixed',
         inset: 0,
         pointerEvents: 'none',
-        zIndex: 50,
+        zIndex: 20,
       }}
     />
   );

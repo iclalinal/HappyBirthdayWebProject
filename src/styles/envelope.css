@@ -1,0 +1,171 @@
+/* Envelope Container */
+.envelope-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 40;
+  pointer-events: auto;
+}
+
+/* Envelope Wrapper */
+.envelope-wrapper {
+  cursor: pointer;
+  position: relative;
+  z-index: 50;
+}
+
+/* Fly-in animation */
+.envelope-fly-in {
+  animation: envelopeFlyIn 900ms cubic-bezier(0.15, 0.85, 0.25, 1) forwards;
+}
+
+@keyframes envelopeFlyIn {
+  0% {
+    transform: translateY(300px) scale(0.5) rotateZ(-8deg) rotateX(15deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1) rotateZ(0deg) rotateX(0deg);
+    opacity: 1;
+  }
+}
+
+/* Envelope Body */
+.envelope-body {
+  position: relative;
+  width: 280px;
+  height: 180px;
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.2));
+  /* Start gentle idle after fly-in completes */
+  animation: envelopeIdle 3.5s ease-in-out infinite;
+  animation-delay: 900ms;
+}
+
+/* Idle gentle float/tilt */
+@keyframes envelopeIdle {
+  0%, 100% { transform: translateY(0) rotateZ(0deg); }
+  25% { transform: translateY(-4px) rotateZ(0.4deg); }
+  50% { transform: translateY(0) rotateZ(0deg); }
+  75% { transform: translateY(3px) rotateZ(-0.4deg); }
+}
+
+/* Envelope Front */
+.envelope-front {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Envelope Flap (Top) */
+.envelope-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(135deg, #FFB6D9 0%, #FFD1E8 100%);
+  clip-path: polygon(0 0, 50% 100%, 100% 0);
+  border-radius: 8px 8px 0 0;
+  transform-origin: top;
+  transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  cursor: pointer;
+}
+
+.flap-open {
+  transform: rotateX(-160deg);
+}
+
+@keyframes flapHover {
+  0%, 100% {
+    transform: translateY(0) rotateX(0deg);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes flapPulse {
+  0%, 100% {
+    transform: rotateX(0deg);
+  }
+  50% {
+    transform: rotateX(-15deg);
+  }
+}
+
+/* Envelope Base */
+.envelope-base {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60%;
+  background: linear-gradient(135deg, #FFF5E1 0%, #FFEAA7 100%);
+  border-radius: 0 0 8px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #FFD1E8;
+  transform-style: preserve-3d;
+}
+
+/* Envelope Design */
+.envelope-design {
+  text-align: center;
+  font-size: 32px;
+  animation: designPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes designPulse {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(5deg);
+  }
+}
+
+.design-icon {
+  display: inline-block;
+}
+
+/* Click Hint */
+.click-hint {
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #FF69B4;
+  font-size: 14px;
+  font-weight: 600;
+  animation: hintPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes hintPulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-4px);
+  }
+}
+
+/* Card Reveal */
+.card-reveal {
+  animation: cardReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes cardReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
