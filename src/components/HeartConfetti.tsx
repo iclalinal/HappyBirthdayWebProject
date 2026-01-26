@@ -10,7 +10,11 @@ interface Heart {
   opacity: number;
 }
 
-export default function HeartConfetti() {
+interface Props {
+  themeColor?: string;
+}
+
+export default function HeartConfetti({ themeColor = '#c9a89f' }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const hearts = useRef<Heart[]>([]);
   const animationRef = useRef<number>(0);
@@ -38,7 +42,7 @@ export default function HeartConfetti() {
       ctx.translate(h.x, h.y);
       ctx.rotate(h.rotation);
       ctx.globalAlpha = h.opacity;
-      ctx.fillStyle = '#c9a89f';
+      ctx.fillStyle = themeColor;
 
       ctx.beginPath();
       ctx.moveTo(0, h.size / 4);
@@ -73,7 +77,7 @@ export default function HeartConfetti() {
     return () => {
       cancelAnimationFrame(animationRef.current!);
     };
-  }, []);
+  }, [themeColor]);
 
   return (
     <canvas
