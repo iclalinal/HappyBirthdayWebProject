@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { createCard } from '../services/cardService';
+import { useToast } from '../context/ToastContext';
 import '../styles/create-card.css';
 
 interface FormData {
@@ -35,8 +36,8 @@ export default function CreateCard() {
 
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [createdLink, setCreatedLink] = useState<string | null>(null);
-  const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { addToast } = useToast();
 
   const themeColor = themeColors[formData.theme];
 
@@ -97,7 +98,7 @@ export default function CreateCard() {
       const normalizedBase = base.endsWith('/') ? base : `${base}/`;
       const link = `${window.location.origin}${normalizedBase}card/${id}`;
       setCreatedLink(link);
-      setCopyFeedback(null);
+      addToast('Kart başarıyla oluşturuldu!', 'success');
       console.log('Kart oluşturuldu:', { id, ...payload });
 
       setFormData({
@@ -111,7 +112,7 @@ export default function CreateCard() {
       setErrors({});
     } catch (error) {
       console.error('Kart oluşturulurken hata oluştu:', error);
-      alert('Kart oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
+      addToast('Kart oluşturulamadı, lütfen tekrar deneyin.', 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -121,11 +122,10 @@ export default function CreateCard() {
     if (!createdLink) return;
     try {
       await navigator.clipboard.writeText(createdLink);
-      setCopyFeedback('Link panoya kopyalandı!');
-      setTimeout(() => setCopyFeedback(null), 2500);
+      addToast('Link panoya kopyalandı!', 'info');
     } catch (error) {
       console.error('Link kopyalanamadı:', error);
-      alert('Link kopyalanamadı, lütfen manuel kopyalayın.');
+      addToast('Link kopyalanamadı, lütfen manuel kopyalayın.', 'error');
     }
   };
 
@@ -285,7 +285,6 @@ export default function CreateCard() {
                     Kopyala
                   </button>
                 </div>
-                {copyFeedback && <span className="copy-feedback">{copyFeedback}</span>}
               </div>
             )}
           </div>

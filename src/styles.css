@@ -379,6 +379,47 @@ html, body, #root {
   color: #ffc2c2;
 }
 
+/* Toasts */
+.toast-container {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 120;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 240px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  color: #0d0f1a;
+  background: #e6edff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+}
+
+.toast-success { background: linear-gradient(135deg, #9be7c4, #62d4a7); }
+.toast-error { background: linear-gradient(135deg, #ffb3b3, #ff7a7a); }
+.toast-info { background: linear-gradient(135deg, #c6d8ff, #9fb8ff); }
+.toast-warning { background: linear-gradient(135deg, #ffe3a3, #ffc866); }
+
+.toast-close {
+  margin-left: auto;
+  background: rgba(0,0,0,0.08);
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #0d0f1a;
+  font-weight: 700;
+}
+
 /* Loading Spinner for ViewCard */
 .loading-spinner {
   width: 48px;
