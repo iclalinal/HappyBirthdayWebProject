@@ -65,7 +65,7 @@ export default function Envelope({ onOpen, themeColor, message = [] }: EnvelopeP
 
           {/* ÖN YÜZ */}
           <div className="envelope-front" style={{ borderColor: accent }}>
-            <div className="envelope-base" style={{ background: accent }}>
+            <div className="envelope-base">
               <div className="envelope-design" style={{ color: '#0d0f1a' }}>
                 <span className="design-icon">💌</span>
               </div>
