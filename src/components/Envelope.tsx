@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react';
-import BirthdayCard from './BirthdayCard';
 import CardBook from './CardBook';
 import '../styles/envelope.css';
 
 interface EnvelopeProps {
   onOpen?: () => void;
+  themeColor?: string;
+  message?: string[];
 }
 
-export default function Envelope({ onOpen }: EnvelopeProps) {
+export default function Envelope({ onOpen, themeColor, message = [] }: EnvelopeProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const [showCard, setShowCard] = useState(false);
   const [cardOut, setCardOut] = useState(false);
 
   const [showBook, setShowBook] = useState(false);
-  const [startTyping, setStartTyping] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -44,6 +44,8 @@ export default function Envelope({ onOpen }: EnvelopeProps) {
     onOpen?.();
   };
 
+  const accent = themeColor || '#e5c4a1';
+
   return (
   <div className="envelope-container">
     {!showBook ? (
@@ -56,12 +58,15 @@ export default function Envelope({ onOpen }: EnvelopeProps) {
           {/* 🔺 KAPAK — FRONT'TAN AYRI */}
           <div
             className={`envelope-flap ${isOpen ? 'flap-open' : ''}`}
+            style={{ 
+              background: `linear-gradient(to bottom, ${accent}, ${accent}dd)`,
+            }}
           />
 
           {/* ÖN YÜZ */}
-          <div className="envelope-front">
-            <div className="envelope-base">
-              <div className="envelope-design">
+          <div className="envelope-front" style={{ borderColor: accent }}>
+            <div className="envelope-base" style={{ background: accent }}>
+              <div className="envelope-design" style={{ color: '#0d0f1a' }}>
                 <span className="design-icon">💌</span>
               </div>
             </div>
@@ -74,7 +79,7 @@ export default function Envelope({ onOpen }: EnvelopeProps) {
               ${cardOut ? 'card-out' : ''}
             `}
           >
-            <div className="card-preview" />
+            <div className="card-preview" style={{ borderColor: accent }} />
           </div>
 
         </div>
@@ -83,10 +88,7 @@ export default function Envelope({ onOpen }: EnvelopeProps) {
       </div>
     ) : (
       <div className="card-reveal">
-        <CardBook onOpened={() => setStartTyping(true)} />
-        <div className="card-message-overlay">
-          <BirthdayCard start={startTyping} />
-        </div>
+        <CardBook message={message} />
       </div>
     )}
   </div>
