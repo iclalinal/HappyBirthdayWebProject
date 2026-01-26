@@ -54,9 +54,27 @@ export function useMicrophone() {
   };
 
   const stop = () => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    // AudioContext'i kapatma - ses oynatması için gerekli olabilir
-    // Sadece RAF'ı ve started state'i kapat
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+
+    // AudioContext'i kapat (memory leak önlemek için kritik)
+    if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+      audioContextRef.current.close();
+      audioContextRef.current = null;
+    }
+
+    // Stream'i durdur
+    if (analyserRef.current) {
+      const source = analyserRef.current;
+      if (source.context && source.context.state !== 'closed') {
+        source.disconnect();
+      }
+      analyserRef.current = null;
+    }
+
+    dataArrayRef.current = null;
     setStarted(false);
   };
 
