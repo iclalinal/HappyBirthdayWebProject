@@ -52,7 +52,7 @@
   border-radius: 16px;
   border: 1px solid var(--color-bronze);
   pointer-events: none;
-  z-index: 10; 
+  z-index: 10;
 }
 
 /* Idle gentle float/tilt */

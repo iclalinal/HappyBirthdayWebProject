@@ -35,7 +35,11 @@ export default function HeartConfetti({ themeColor = '#c9a89f' }: Props) {
       opacity: 0.5 + Math.random() * 0.4,
     });
 
-    hearts.current = Array.from({ length: 120 }, createHeart);
+    const isMobileOrConstrained =
+      window.innerWidth < 768 || window.devicePixelRatio > 2;
+    const heartCount = isMobileOrConstrained ? 80 : 120;
+
+    hearts.current = Array.from({ length: heartCount }, createHeart);
 
     const drawHeart = (h: Heart) => {
       ctx.save();
