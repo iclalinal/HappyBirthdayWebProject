@@ -56,7 +56,8 @@
 .card-message-overlay {
   position: absolute;
   width: 240px;
-  height: 320px;
+  min-height: 320px;
+  max-height: 520px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -91,7 +92,8 @@
 
   .card-message-overlay {
     width: 190px;
-    height: 260px;
+    min-height: 260px;
+    max-height: 460px;
     right: 10px;
   }
 }
@@ -119,7 +121,8 @@
 
   .card-message-overlay {
     width: 160px;
-    height: 220px;
+    min-height: 220px;
+    max-height: 400px;
     right: 5px;
   }
 }
