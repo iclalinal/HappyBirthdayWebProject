@@ -14,6 +14,9 @@
   animation: envelopeIdle 4s ease-in-out infinite;
   animation-delay: 900ms;
   z-index: 40;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* Fly-in animation */
@@ -36,6 +39,7 @@
 .envelope-body {
   position: relative;
   width: 300px;
+  max-width: 90vw;
   height: 190px;
   border-radius: 16px;
   background: linear-gradient(180deg, #1a1a20, #0d0d12);

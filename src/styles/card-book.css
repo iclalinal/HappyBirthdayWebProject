@@ -2,7 +2,7 @@
 .book-stage {
   position: relative;
   width: 520px;
-  max-width: 92vw;
+  max-width: 95vw;
   height: 360px;
   perspective: 1400px;
   display: flex;
@@ -55,17 +55,36 @@
 /* Place for message overlay on right page */
 .card-message-overlay {
   position: absolute;
-  width: 240px;
-  min-height: 320px;
-  max-height: 520px;
+  width: 220px;
+  max-height: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 60;
   pointer-events: auto;
-  right: 20px;
+  right: 15px;
   top: 50%;
   transform: translateY(-50%);
+  overflow-y: auto;
+  overflow-x: hidden;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  padding-right: 5px;
+  scrollbar-width: thin;
+}
+
+/* Custom scrollbar for card message overlay */
+.card-message-overlay::-webkit-scrollbar {
+  width: 4px;
+}
+
+.card-message-overlay::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.card-message-overlay::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
 }
 
 /* Responsive */
@@ -91,38 +110,44 @@
   }
 
   .card-message-overlay {
-    width: 190px;
+    width: 180px;
     min-height: 260px;
-    max-height: 460px;
+    max-height: 400px;
     right: 10px;
+    font-size: 13px;
   }
 }
 
 @media (max-width: 480px) {
   .book-stage {
-    width: 340px;
-    height: 240px;
+    width: 90vw;
+    max-width: 300px;
+    height: auto;
+    aspect-ratio: 4 / 3;
     perspective: 800px;
   }
 
   .book {
-    width: 320px;
-    height: 220px;
+    width: 100%;
+    max-width: 280px;
+    aspect-ratio: 4 / 3;
   }
 
   .page {
-    left: 160px;
-    width: 160px;
+    left: 50%;
+    width: calc(50% - 2px);
+    height: 100%;
   }
 
   .page.right {
-    left: 160px;
+    left: 50%;
   }
 
   .card-message-overlay {
-    width: 160px;
-    min-height: 220px;
-    max-height: 400px;
-    right: 5px;
+    width: calc(50% - 10px);
+    max-height: 250px;
+    right: 8px;
+    font-size: 12px;
+    padding-right: 4px;
   }
 }
