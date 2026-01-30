@@ -1,22 +1,98 @@
 import { useMemo, useState } from 'react';
 import { createCard } from '../services/cardService';
 import { useToast } from '../context/ToastContext';
+import Cake from '../components/Cake';
+import Envelope from '../components/Envelope';
+import CardBook from '../components/CardBook';
+import HeartConfetti from '../components/HeartConfetti';
+import StarConfetti from '../components/StarConfetti';
+import SnowConfetti from '../components/SnowConfetti';
 import '../styles/create-card.css';
+
+// Generate dynamic background based on hex color
+const getDynamicBackground = (hexColor: string): string => {
+  const hex = hexColor.replace('#', '')
+  const r = parseInt(hex.substring(0, 2), 16)
+  const g = parseInt(hex.substring(2, 4), 16)
+  const b = parseInt(hex.substring(4, 6), 16)
+  return `radial-gradient(circle at 20% 20%, rgba(${r}, ${g}, ${b}, 0.18), transparent 35%), radial-gradient(circle at 80% 10%, rgba(${r}, ${g}, ${b}, 0.16), transparent 30%), linear-gradient(135deg, #0b152e 0%, #0d1f3a 40%, #07101f 100%)`
+}
+
+// Theme Presets
+const PRESETS = [
+  {
+    name: 'Ocean',
+    icon: '🌊',
+    colors: {
+      backgroundColor: '#1e3a5f',
+      cakeColor: '#4a90e2',
+      envelopeColor: '#2c5aa0',
+      confettiColor: '#87ceeb',
+    },
+  },
+  {
+    name: 'Sunset',
+    icon: '🌅',
+    colors: {
+      backgroundColor: '#4a1f3a',
+      cakeColor: '#ff6b35',
+      envelopeColor: '#d84315',
+      confettiColor: '#ffb74d',
+    },
+  },
+  {
+    name: 'Lavender',
+    icon: '🌸',
+    colors: {
+      backgroundColor: '#2d1b3d',
+      cakeColor: '#9d4edd',
+      envelopeColor: '#7209b7',
+      confettiColor: '#c77dff',
+    },
+  },
+  {
+    name: 'Midnight',
+    icon: '🌙',
+    colors: {
+      backgroundColor: '#0a0e27',
+      cakeColor: '#4a5568',
+      envelopeColor: '#2d3748',
+      confettiColor: '#e2e8f0',
+    },
+  },
+  {
+    name: 'Aşk',
+    icon: '❤️',
+    colors: {
+      backgroundColor: '#4a0e0e',
+      cakeColor: '#ff3366',
+      envelopeColor: '#800020',
+      confettiColor: '#ffb3b3',
+    },
+  },
+  {
+    name: 'Orman',
+    icon: '🌲',
+    colors: {
+      backgroundColor: '#1a2f1a',
+      cakeColor: '#8fbc8f',
+      envelopeColor: '#2e8b57',
+      confettiColor: '#ffd700',
+    },
+  },
+];
 
 interface FormData {
   senderName: string;
   recipientName: string;
   email: string;
   message: string;
-  theme: 'ocean' | 'sunset' | 'lavender';
+  backgroundColor: string;
+  cakeColor: string;
+  envelopeColor: string;
+  confettiColor: string;
   confettiType: 'heart' | 'star' | 'snow';
 }
-
-const themeColors: Record<FormData['theme'], string> = {
-  ocean: '#2b84ea',
-  sunset: '#f48c06',
-  lavender: '#9d4edd',
-};
 
 const confettiLabels: Record<FormData['confettiType'], string> = {
   heart: 'Kalp Konfeti',
@@ -24,13 +100,23 @@ const confettiLabels: Record<FormData['confettiType'], string> = {
   snow: 'Kar Konfeti',
 };
 
+const ConfettiLayer = ({ type, themeColor }: { type: FormData['confettiType']; themeColor: string }) => {
+  if (type === 'heart') return <HeartConfetti themeColor={themeColor} />
+  if (type === 'star') return <StarConfetti themeColor={themeColor} />
+  if (type === 'snow') return <SnowConfetti themeColor={themeColor} />
+  return null
+}
+
 export default function CreateCard() {
   const [formData, setFormData] = useState<FormData>({
     senderName: '',
     recipientName: '',
     email: '',
     message: '',
-    theme: 'ocean',
+    backgroundColor: '#1e3a5f',
+    cakeColor: '#4a90e2',
+    envelopeColor: '#2c5aa0',
+    confettiColor: '#87ceeb',
     confettiType: 'heart',
   });
 
@@ -38,8 +124,6 @@ export default function CreateCard() {
   const [createdLink, setCreatedLink] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { addToast } = useToast();
-
-  const themeColor = themeColors[formData.theme];
 
   const previewMessages = useMemo(() => {
     const base = formData.message.trim()
@@ -59,6 +143,14 @@ export default function CreateCard() {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handlePresetSelect = (preset: typeof PRESETS[0]) => {
+    setFormData((prev) => ({
+      ...prev,
+      ...preset.colors,
+    }));
+    addToast(`${preset.name} teması uygulandı!`, 'success');
   };
 
   const validateForm = (): boolean => {
@@ -87,7 +179,10 @@ export default function CreateCard() {
       senderName: formData.senderName.trim(),
       recipientName: formData.recipientName.trim(),
       message: formData.message.trim(),
-      theme: formData.theme,
+      backgroundColor: formData.backgroundColor,
+      cakeColor: formData.cakeColor,
+      envelopeColor: formData.envelopeColor,
+      confettiColor: formData.confettiColor,
       confettiType: formData.confettiType,
       email: formData.email.trim(),
     };
@@ -106,7 +201,10 @@ export default function CreateCard() {
         recipientName: '',
         email: '',
         message: '',
-        theme: 'ocean',
+        backgroundColor: '#1e3a5f',
+        cakeColor: '#4a90e2',
+        envelopeColor: '#2c5aa0',
+        confettiColor: '#87ceeb',
         confettiType: 'heart',
       });
       setErrors({});
@@ -131,10 +229,15 @@ export default function CreateCard() {
 
   return (
     <div className="create-card-container">
+      {/* Global Confetti Layer - Full Screen */}
+      <ConfettiLayer type={formData.confettiType} themeColor={formData.confettiColor} />
+      
       <div className="create-card-card">
         <div className="create-card-header">
           <div>
-            <h1 className="create-card-title">Doğum Günü Kartı Oluştur</h1>
+            <h1 className="create-card-title">
+              Doğum Günü Kartı Oluştur
+            </h1>
             <p className="create-card-subtitle">Sevdiğin birinin doğum gününü kutlamanın zamanı!</p>
           </div>
         </div>
@@ -220,23 +323,84 @@ export default function CreateCard() {
                 {errors.message && <span className="error-text">{errors.message}</span>}
               </div>
 
-              {/* Tema Seçimi */}
+              {/* Hızlı Tema Seç */}
               <div className="form-group">
-                <label htmlFor="theme" className="form-label">
-                  Tema Seçimi *
+                <label className="form-label">
+                  Hızlı Tema Seç
                 </label>
-                <select
-                  id="theme"
-                  name="theme"
-                  value={formData.theme}
-                  onChange={handleInputChange}
-                  className="form-select"
-                  required
-                >
-                  <option value="ocean">Okyanus (Mavi)</option>
-                  <option value="sunset">Gün Batımı (Turuncu)</option>
-                  <option value="lavender">Lavanta (Mor)</option>
-                </select>
+                <div className="preset-buttons">
+                  {PRESETS.map((preset) => (
+                    <button
+                      key={preset.name}
+                      type="button"
+                      className="preset-button"
+                      onClick={() => handlePresetSelect(preset)}
+                      style={{
+                        background: `linear-gradient(135deg, ${preset.colors.backgroundColor}, ${preset.colors.cakeColor})`,
+                      }}
+                    >
+                      <span className="preset-icon">{preset.icon}</span>
+                      <span className="preset-name">{preset.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Detaylı Renk Ayarları */}
+              <div className="form-group">
+                <label className="form-label">
+                  Detaylı Renk Ayarları
+                </label>
+                <div className="color-pickers-grid">
+                  <div className="color-picker-item">
+                    <label htmlFor="backgroundColor" className="color-label">Arkaplan Rengi</label>
+                    <input
+                      type="color"
+                      id="backgroundColor"
+                      name="backgroundColor"
+                      value={formData.backgroundColor}
+                      onChange={handleInputChange}
+                      className="color-input"
+                    />
+                    <span className="color-value">{formData.backgroundColor.toUpperCase()}</span>
+                  </div>
+                  <div className="color-picker-item">
+                    <label htmlFor="cakeColor" className="color-label">Pasta Rengi</label>
+                    <input
+                      type="color"
+                      id="cakeColor"
+                      name="cakeColor"
+                      value={formData.cakeColor}
+                      onChange={handleInputChange}
+                      className="color-input"
+                    />
+                    <span className="color-value">{formData.cakeColor.toUpperCase()}</span>
+                  </div>
+                  <div className="color-picker-item">
+                    <label htmlFor="envelopeColor" className="color-label">Zarf Rengi</label>
+                    <input
+                      type="color"
+                      id="envelopeColor"
+                      name="envelopeColor"
+                      value={formData.envelopeColor}
+                      onChange={handleInputChange}
+                      className="color-input"
+                    />
+                    <span className="color-value">{formData.envelopeColor.toUpperCase()}</span>
+                  </div>
+                  <div className="color-picker-item">
+                    <label htmlFor="confettiColor" className="color-label">Konfeti Rengi</label>
+                    <input
+                      type="color"
+                      id="confettiColor"
+                      name="confettiColor"
+                      value={formData.confettiColor}
+                      onChange={handleInputChange}
+                      className="color-input"
+                    />
+                    <span className="color-value">{formData.confettiColor.toUpperCase()}</span>
+                  </div>
+                </div>
               </div>
 
               {/* Konfeti Tipi */}
@@ -263,7 +427,11 @@ export default function CreateCard() {
                 type="submit" 
                 className="submit-button"
                 disabled={isSubmitting}
-                style={{ opacity: isSubmitting ? 0.7 : 1 }}
+                style={{ 
+                  opacity: isSubmitting ? 0.7 : 1,
+                  backgroundColor: formData.cakeColor,
+                  boxShadow: `0 4px 12px ${formData.cakeColor}66`,
+                }}
               >
                 {isSubmitting ? (
                   <>
@@ -293,49 +461,59 @@ export default function CreateCard() {
             <div className="preview-panel">
               <div className="preview-header">
                 <div>
-                  <p className="preview-sub">Kart Önizlemesi</p>
-                  <h3 className="preview-title">Canlı görünüm</h3>
+                  <p className="preview-sub">Canlı Önizleme</p>
+                  <h3 className="preview-title">Gerçek zamanlı görünüm</h3>
                 </div>
                 <div className="preview-badges">
                   <span className="pill">{confettiLabels[formData.confettiType]}</span>
-                  <span className="pill">{formData.theme.toUpperCase()}</span>
                 </div>
               </div>
 
-              <div
-                className="preview-card"
-                style={{
-                  borderColor: themeColor,
-                  boxShadow: `0 14px 40px ${themeColor}40`,
-                  background: `linear-gradient(135deg, ${themeColor}1f, rgba(255,255,255,0.02))`,
-                }}
-              >
-                <div className="preview-hero" style={{ color: themeColor }}>
-                  <div className="preview-icon" aria-hidden>
-                    {formData.confettiType === 'heart' && '💖'}
-                    {formData.confettiType === 'star' && '✨'}
-                    {formData.confettiType === 'snow' && '❄️'}
-                  </div>
-                  <div className="preview-names">
-                    <span className="label">Gönderen</span>
-                    <strong>{formData.senderName || 'Gönderen'}</strong>
-                    <span className="label">Alıcı</span>
-                    <strong>{formData.recipientName || 'Alıcı'}</strong>
+              {/* Info Box */}
+              <div className="preview-info-box">
+                <div className="info-item">
+                  <span className="info-label">Gönderen:</span>
+                  <span className="info-value">{formData.senderName || 'Belirtilmedi'}</span>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Alıcı:</span>
+                  <span className="info-value">{formData.recipientName || 'Belirtilmedi'}</span>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Renkler:</span>
+                  <div style={{ display: 'flex', gap: '4px' }}>
+                    <div style={{ width: '20px', height: '20px', borderRadius: '4px', backgroundColor: formData.backgroundColor, border: '1px solid rgba(255,255,255,0.3)' }} title="Arkaplan" />
+                    <div style={{ width: '20px', height: '20px', borderRadius: '4px', backgroundColor: formData.cakeColor, border: '1px solid rgba(255,255,255,0.3)' }} title="Pasta" />
+                    <div style={{ width: '20px', height: '20px', borderRadius: '4px', backgroundColor: formData.envelopeColor, border: '1px solid rgba(255,255,255,0.3)' }} title="Zarf" />
+                    <div style={{ width: '20px', height: '20px', borderRadius: '4px', backgroundColor: formData.confettiColor, border: '1px solid rgba(255,255,255,0.3)' }} title="Konfeti" />
                   </div>
                 </div>
+              </div>
 
-                <div className="preview-message">
-                  {previewMessages.map((line, idx) => (
-                    <div key={idx} className="preview-line">
-                      {line}
-                    </div>
-                  ))}
+              {/* Live Preview Stage */}
+              <div className="preview-stage" style={{ background: getDynamicBackground(formData.backgroundColor) }}>
+                {/* 1. The Cake */}
+                <div style={{ pointerEvents: 'none' }} className="preview-item">
+                  <Cake
+                    volume={0}
+                    started={true}
+                    onAllBlown={() => {}}
+                    themeColor={formData.cakeColor}
+                  />
                 </div>
-
-                <div className="preview-footer" style={{ color: themeColor }}>
-                  {formData.theme === 'ocean' && 'Deniz esintili bir kutlama'}
-                  {formData.theme === 'sunset' && 'Gün batımında sıcak bir kutlama'}
-                  {formData.theme === 'lavender' && 'Lavanta tonlarında huzurlu kutlama'}
+                
+                {/* 2. The Envelope */}
+                <div style={{ pointerEvents: 'none' }} className="preview-item">
+                  <Envelope
+                    themeColor={formData.envelopeColor}
+                  />
+                </div>
+                
+                {/* 3. The Card Book */}
+                <div style={{ pointerEvents: 'none' }} className="preview-item">
+                  <CardBook
+                    message={previewMessages}
+                  />
                 </div>
               </div>
             </div>
