@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import CardBook from './CardBook';
+import { useLanguage } from '../context/LanguageContext';
 import '../styles/envelope.css';
 
 interface EnvelopeProps {
@@ -9,6 +10,7 @@ interface EnvelopeProps {
 }
 
 export default function Envelope({ onOpen, themeColor, message = [] }: EnvelopeProps) {
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
 
   const [showCard, setShowCard] = useState(false);
@@ -84,7 +86,7 @@ export default function Envelope({ onOpen, themeColor, message = [] }: EnvelopeP
 
         </div>
 
-        {!isOpen && <div className="click-hint">Tıkla ✨</div>}
+        {!isOpen && <div className="click-hint">{t('envelope_click_hint')}</div>}
       </div>
     ) : (
       <div className="card-reveal">

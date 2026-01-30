@@ -95,6 +95,10 @@ export const TRANSLATIONS = {
     
     // ViewCard
     make_wish: 'bir dilek tut',
+    view_wish: 'Bir dilek tut',
+    view_loading: 'Yükleniyor...',
+    view_error: 'Kart bulunamadı',
+    envelope_click_hint: 'Tıkla ✨',
   },
   en: {
     // Page Titles
@@ -192,6 +196,10 @@ export const TRANSLATIONS = {
     
     // ViewCard
     make_wish: 'make a wish',
+    view_wish: 'Make a wish',
+    view_loading: 'Loading...',
+    view_error: 'Card not found',
+    envelope_click_hint: 'Click ✨',
   },
 };
 

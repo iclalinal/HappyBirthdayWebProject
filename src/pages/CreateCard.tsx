@@ -187,6 +187,7 @@ export default function CreateCard() {
       confettiColor: formData.confettiColor,
       confettiType: formData.confettiType,
       email: formData.email.trim(),
+      language,
     };
 
     try {

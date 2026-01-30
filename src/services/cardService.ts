@@ -11,6 +11,7 @@ export interface CardData {
   confettiColor: string
   confettiType: 'heart' | 'star' | 'snow'
   email: string
+  language: 'tr' | 'en'
   createdAt?: Timestamp
 }
 
@@ -44,6 +45,7 @@ export const getCard = async (id: string): Promise<CardData | null> => {
     confettiColor: payload.confettiColor || '#2b84ea',
     confettiType: payload.confettiType,
     email: payload.email,
+    language: payload.language || 'tr',
     createdAt: payload.createdAt,
   }
 }

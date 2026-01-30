@@ -7,6 +7,7 @@ import StarConfetti from '../components/StarConfetti'
 import SnowConfetti from '../components/SnowConfetti'
 import { getCard, type CardData } from '../services/cardService'
 import { useMicrophone } from '../hooks/useMicrophone'
+import { useLanguage } from '../context/LanguageContext'
 import '../styles.css'
 
 // Generate dynamic background based on hex color
@@ -37,13 +38,14 @@ export default function ViewCard() {
   const [showConfetti, setShowConfetti] = useState(false)
   const [showEnvelope, setShowEnvelope] = useState(false)
   const { volume, start, stop } = useMicrophone()
+  const { t, setLanguage } = useLanguage()
 
   useEffect(() => {
     let mounted = true
 
     const fetchCard = async () => {
       if (!id) {
-        setError('Kart bulunamadı')
+        setError(t('view_error'))
         setLoading(false)
         return
       }
@@ -53,13 +55,16 @@ export default function ViewCard() {
         if (!mounted) return
 
         if (!data) {
-          setError('Kart bulunamadı')
+          setError(t('view_error'))
         } else {
+          if (data.language) {
+            setLanguage(data.language)
+          }
           setCard(data)
         }
       } catch (err) {
         console.error('Kart çekilirken hata oluştu:', err)
-        if (mounted) setError('Kart bulunamadı')
+        if (mounted) setError(t('view_error'))
       } finally {
         if (mounted) setLoading(false)
       }
@@ -70,7 +75,7 @@ export default function ViewCard() {
     return () => {
       mounted = false
     }
-  }, [id])
+  }, [id, setLanguage, t])
 
   // Use dynamic colors from card data
   const backgroundColor = card?.backgroundColor || '#1e3a5f'
@@ -87,6 +92,7 @@ export default function ViewCard() {
       <div className="app view-card" style={{ background: getDynamicBackground('#1e3a5f') }}>
         <div className="center-state">
           <div className="loading-spinner"></div>
+          <div className="loading-text">{t('view_loading')}</div>
         </div>
       </div>
     )
@@ -115,7 +121,7 @@ export default function ViewCard() {
             start()
           }}
         >
-          <div className="overlay-content">✨ {card.recipientName}, bir dilek tut</div>
+          <div className="overlay-content">✨ {card.recipientName}, {t('view_wish')}</div>
         </div>
       )}
 
