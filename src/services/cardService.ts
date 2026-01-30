@@ -5,7 +5,10 @@ export interface CardData {
   senderName: string
   recipientName: string
   message: string
-  theme: 'ocean' | 'sunset' | 'lavender'
+  backgroundColor: string
+  cakeColor: string
+  envelopeColor: string
+  confettiColor: string
   confettiType: 'heart' | 'star' | 'snow'
   email: string
   createdAt?: Timestamp
@@ -35,7 +38,10 @@ export const getCard = async (id: string): Promise<CardData | null> => {
     senderName: payload.senderName,
     recipientName: payload.recipientName,
     message: payload.message,
-    theme: payload.theme,
+    backgroundColor: payload.backgroundColor || '#2b84ea',
+    cakeColor: payload.cakeColor || '#2b84ea',
+    envelopeColor: payload.envelopeColor || '#2b84ea',
+    confettiColor: payload.confettiColor || '#2b84ea',
     confettiType: payload.confettiType,
     email: payload.email,
     createdAt: payload.createdAt,
