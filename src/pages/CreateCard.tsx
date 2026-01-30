@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { createCard } from '../services/cardService';
 import { useToast } from '../context/ToastContext';
+import { useLanguage } from '../context/LanguageContext';
 import Cake from '../components/Cake';
 import Envelope from '../components/Envelope';
 import CardBook from '../components/CardBook';
@@ -21,7 +22,8 @@ const getDynamicBackground = (hexColor: string): string => {
 // Theme Presets
 const PRESETS = [
   {
-    name: 'Ocean',
+    key: 'ocean',
+    labelKey: 'theme_ocean',
     icon: '🌊',
     colors: {
       backgroundColor: '#1e3a5f',
@@ -31,7 +33,8 @@ const PRESETS = [
     },
   },
   {
-    name: 'Sunset',
+    key: 'sunset',
+    labelKey: 'theme_sunset',
     icon: '🌅',
     colors: {
       backgroundColor: '#4a1f3a',
@@ -41,7 +44,8 @@ const PRESETS = [
     },
   },
   {
-    name: 'Lavender',
+    key: 'lavender',
+    labelKey: 'theme_lavender',
     icon: '🌸',
     colors: {
       backgroundColor: '#2d1b3d',
@@ -51,7 +55,8 @@ const PRESETS = [
     },
   },
   {
-    name: 'Midnight',
+    key: 'midnight',
+    labelKey: 'theme_midnight',
     icon: '🌙',
     colors: {
       backgroundColor: '#0a0e27',
@@ -61,7 +66,8 @@ const PRESETS = [
     },
   },
   {
-    name: 'Aşk',
+    key: 'love',
+    labelKey: 'theme_love',
     icon: '❤️',
     colors: {
       backgroundColor: '#4a0e0e',
@@ -71,7 +77,8 @@ const PRESETS = [
     },
   },
   {
-    name: 'Orman',
+    key: 'forest',
+    labelKey: 'theme_forest',
     icon: '🌲',
     colors: {
       backgroundColor: '#1a2f1a',
@@ -94,12 +101,6 @@ interface FormData {
   confettiType: 'heart' | 'star' | 'snow';
 }
 
-const confettiLabels: Record<FormData['confettiType'], string> = {
-  heart: 'Kalp Konfeti',
-  star: 'Yıldız Konfeti',
-  snow: 'Kar Konfeti',
-};
-
 const ConfettiLayer = ({ type, themeColor }: { type: FormData['confettiType']; themeColor: string }) => {
   if (type === 'heart') return <HeartConfetti themeColor={themeColor} />
   if (type === 'star') return <StarConfetti themeColor={themeColor} />
@@ -108,6 +109,7 @@ const ConfettiLayer = ({ type, themeColor }: { type: FormData['confettiType']; t
 }
 
 export default function CreateCard() {
+  const { t, language, setLanguage } = useLanguage();
   const [formData, setFormData] = useState<FormData>({
     senderName: '',
     recipientName: '',
@@ -128,12 +130,12 @@ export default function CreateCard() {
   const previewMessages = useMemo(() => {
     const base = formData.message.trim()
       ? formData.message.split('\n').filter(Boolean)
-      : ['Örnek mesaj satırı', 'İkinci satır burada'];
+      : [t('example_message_line1'), t('example_message_line2')];
     const withSignature = formData.senderName.trim()
       ? [...base, `- ${formData.senderName}`]
       : base;
     return withSignature;
-  }, [formData.message, formData.senderName]);
+  }, [formData.message, formData.senderName, t]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -150,17 +152,17 @@ export default function CreateCard() {
       ...prev,
       ...preset.colors,
     }));
-    addToast(`${preset.name} teması uygulandı!`, 'success');
+    addToast(`${t(preset.key as any)} ${t('theme_applied')}`, 'success');
   };
 
   const validateForm = (): boolean => {
     const newErrors: Partial<FormData> = {};
 
-    if (!formData.senderName.trim()) newErrors.senderName = 'Gönderen adı gereklidir';
-    if (!formData.recipientName.trim()) newErrors.recipientName = 'Alıcı adı gereklidir';
-    if (!formData.email.trim()) newErrors.email = 'E-posta adresi gereklidir';
-    if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) newErrors.email = 'Geçerli bir e-posta adresi girin';
-    if (!formData.message.trim()) newErrors.message = 'Mesaj gereklidir';
+    if (!formData.senderName.trim()) newErrors.senderName = t('sender_required');
+    if (!formData.recipientName.trim()) newErrors.recipientName = t('recipient_required');
+    if (!formData.email.trim()) newErrors.email = t('email_required');
+    if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) newErrors.email = t('email_invalid');
+    if (!formData.message.trim()) newErrors.message = t('message_required');
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -193,7 +195,7 @@ export default function CreateCard() {
       const normalizedBase = base.endsWith('/') ? base : `${base}/`;
       const link = `${window.location.origin}${normalizedBase}card/${id}`;
       setCreatedLink(link);
-      addToast('Kart başarıyla oluşturuldu!', 'success');
+      addToast(t('card_created'), 'success');
       console.log('Kart oluşturuldu:', { id, ...payload });
 
       setFormData({
@@ -210,7 +212,7 @@ export default function CreateCard() {
       setErrors({});
     } catch (error) {
       console.error('Kart oluşturulurken hata oluştu:', error);
-      addToast('Kart oluşturulamadı, lütfen tekrar deneyin.', 'error');
+      addToast(t('card_creation_failed'), 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -220,10 +222,10 @@ export default function CreateCard() {
     if (!createdLink) return;
     try {
       await navigator.clipboard.writeText(createdLink);
-      addToast('Link panoya kopyalandı!', 'info');
+      addToast(t('link_copied'), 'info');
     } catch (error) {
       console.error('Link kopyalanamadı:', error);
-      addToast('Link kopyalanamadı, lütfen manuel kopyalayın.', 'error');
+      addToast(t('link_copy_failed'), 'error');
     }
   };
 
@@ -236,9 +238,23 @@ export default function CreateCard() {
         <div className="create-card-header">
           <div>
             <h1 className="create-card-title">
-              Doğum Günü Kartı Oluştur
+              {t('create_title')}
             </h1>
-            <p className="create-card-subtitle">Sevdiğin birinin doğum gününü kutlamanın zamanı!</p>
+            <p className="create-card-subtitle">{t('create_subtitle')}</p>
+          </div>
+          <div className="lang-switch-container">
+            <button
+              className={`lang-btn ${language === 'tr' ? 'active' : ''}`}
+              onClick={() => setLanguage('tr')}
+            >
+              TR
+            </button>
+            <button
+              className={`lang-btn ${language === 'en' ? 'active' : ''}`}
+              onClick={() => setLanguage('en')}
+            >
+              EN
+            </button>
           </div>
         </div>
 
@@ -248,7 +264,7 @@ export default function CreateCard() {
               {/* Gönderen Adı */}
               <div className="form-group">
                 <label htmlFor="senderName" className="form-label">
-                  Gönderen Adı *
+                  {t('sender_label')} *
                 </label>
                 <input
                   type="text"
@@ -257,7 +273,7 @@ export default function CreateCard() {
                   value={formData.senderName}
                   onChange={handleInputChange}
                   className={`form-input ${errors.senderName ? 'input-error' : ''}`}
-                  placeholder="Adınız"
+                  placeholder={t('sender_placeholder')}
                   required
                 />
                 {errors.senderName && <span className="error-text">{errors.senderName}</span>}
@@ -266,7 +282,7 @@ export default function CreateCard() {
               {/* Alıcı Adı */}
               <div className="form-group">
                 <label htmlFor="recipientName" className="form-label">
-                  Alıcı Adı *
+                  {t('recipient_label')} *
                 </label>
                 <input
                   type="text"
@@ -275,7 +291,7 @@ export default function CreateCard() {
                   value={formData.recipientName}
                   onChange={handleInputChange}
                   className={`form-input ${errors.recipientName ? 'input-error' : ''}`}
-                  placeholder="Kutlanacak kişinin adı"
+                  placeholder={t('recipient_placeholder')}
                   required
                 />
                 {errors.recipientName && <span className="error-text">{errors.recipientName}</span>}
@@ -284,7 +300,7 @@ export default function CreateCard() {
               {/* E-posta */}
               <div className="form-group">
                 <label htmlFor="email" className="form-label">
-                  E-posta Adresi *
+                  {t('email_label')} *
                 </label>
                 <input
                   type="email"
@@ -293,7 +309,7 @@ export default function CreateCard() {
                   value={formData.email}
                   onChange={handleInputChange}
                   className={`form-input ${errors.email ? 'input-error' : ''}`}
-                  placeholder="ornek@email.com"
+                  placeholder={t('email_placeholder')}
                   required
                 />
                 {errors.email && <span className="error-text">{errors.email}</span>}
@@ -303,7 +319,7 @@ export default function CreateCard() {
               <div className="form-group">
                 <div className="label-with-counter">
                   <label htmlFor="message" className="form-label">
-                    Mesaj *
+                    {t('message_label')} *
                   </label>
                   <span className="char-counter">
                     {formData.message.length}/500
@@ -315,7 +331,7 @@ export default function CreateCard() {
                   value={formData.message}
                   onChange={handleInputChange}
                   className={`form-textarea ${errors.message ? 'input-error' : ''}`}
-                  placeholder="Doğum günü mesajınızı yazın..."
+                  placeholder={t('message_placeholder')}
                   rows={4}
                   maxLength={500}
                   required
@@ -326,12 +342,12 @@ export default function CreateCard() {
               {/* Hızlı Tema Seç */}
               <div className="form-group">
                 <label className="form-label">
-                  Hızlı Tema Seç
+                  {t('quick_theme_label')}
                 </label>
                 <div className="preset-buttons">
                   {PRESETS.map((preset) => (
                     <button
-                      key={preset.name}
+                      key={preset.key}
                       type="button"
                       className="preset-button"
                       onClick={() => handlePresetSelect(preset)}
@@ -340,7 +356,7 @@ export default function CreateCard() {
                       }}
                     >
                       <span className="preset-icon">{preset.icon}</span>
-                      <span className="preset-name">{preset.name}</span>
+                      <span className="preset-name">{t(preset.labelKey as any)}</span>
                     </button>
                   ))}
                 </div>
@@ -349,11 +365,11 @@ export default function CreateCard() {
               {/* Detaylı Renk Ayarları */}
               <div className="form-group">
                 <label className="form-label">
-                  Detaylı Renk Ayarları
+                  {t('detailed_colors_label')}
                 </label>
                 <div className="color-pickers-grid">
                   <div className="color-picker-item">
-                    <label htmlFor="backgroundColor" className="color-label">Arkaplan Rengi</label>
+                    <label htmlFor="backgroundColor" className="color-label">{t('background_color')}</label>
                     <input
                       type="color"
                       id="backgroundColor"
@@ -365,7 +381,7 @@ export default function CreateCard() {
                     <span className="color-value">{formData.backgroundColor.toUpperCase()}</span>
                   </div>
                   <div className="color-picker-item">
-                    <label htmlFor="cakeColor" className="color-label">Pasta Rengi</label>
+                    <label htmlFor="cakeColor" className="color-label">{t('cake_color')}</label>
                     <input
                       type="color"
                       id="cakeColor"
@@ -377,7 +393,7 @@ export default function CreateCard() {
                     <span className="color-value">{formData.cakeColor.toUpperCase()}</span>
                   </div>
                   <div className="color-picker-item">
-                    <label htmlFor="envelopeColor" className="color-label">Zarf Rengi</label>
+                    <label htmlFor="envelopeColor" className="color-label">{t('envelope_color')}</label>
                     <input
                       type="color"
                       id="envelopeColor"
@@ -389,7 +405,7 @@ export default function CreateCard() {
                     <span className="color-value">{formData.envelopeColor.toUpperCase()}</span>
                   </div>
                   <div className="color-picker-item">
-                    <label htmlFor="confettiColor" className="color-label">Konfeti Rengi</label>
+                    <label htmlFor="confettiColor" className="color-label">{t('confetti_color')}</label>
                     <input
                       type="color"
                       id="confettiColor"
@@ -406,7 +422,7 @@ export default function CreateCard() {
               {/* Konfeti Tipi */}
               <div className="form-group">
                 <label htmlFor="confettiType" className="form-label">
-                  Konfeti Tipi *
+                  {t('confetti_type_label')} *
                 </label>
                 <select
                   id="confettiType"
@@ -416,9 +432,9 @@ export default function CreateCard() {
                   className="form-select"
                   required
                 >
-                  <option value="heart">Kalp</option>
-                  <option value="star">Yıldız</option>
-                  <option value="snow">Kar</option>
+                  <option value="heart">{t('confetti_heart')}</option>
+                  <option value="star">{t('confetti_star')}</option>
+                  <option value="snow">{t('confetti_snow')}</option>
                 </select>
               </div>
 
@@ -436,21 +452,21 @@ export default function CreateCard() {
                 {isSubmitting ? (
                   <>
                     <span className="loading-spinner" />
-                    Oluşturuluyor...
+                    {t('creating')}
                   </>
                 ) : (
-                  'Kartı Oluştur'
+                  t('create_card')
                 )}
               </button>
             </form>
 
             {createdLink && (
               <div className="created-link-card">
-                <p className="link-label">Kartın hazır! Aşağıdaki linki paylaşabilirsin:</p>
+                <p className="link-label">{t('card_ready')}</p>
                 <div className="link-box">
                   <span className="link-text">{createdLink}</span>
                   <button type="button" className="copy-button" onClick={handleCopyLink}>
-                    Kopyala
+                    {t('copy_link')}
                   </button>
                 </div>
               </div>
@@ -461,31 +477,35 @@ export default function CreateCard() {
             <div className="preview-panel">
               <div className="preview-header">
                 <div>
-                  <p className="preview-sub">Canlı Önizleme</p>
-                  <h3 className="preview-title">Gerçek zamanlı görünüm</h3>
+                  <p className="preview-sub">{t('live_preview')}</p>
+                  <h3 className="preview-title">{t('real_time_view')}</h3>
                 </div>
                 <div className="preview-badges">
-                  <span className="pill">{confettiLabels[formData.confettiType]}</span>
+                  <span className="pill">{
+                    formData.confettiType === 'heart' ? t('confetti_heart_label') :
+                    formData.confettiType === 'star' ? t('confetti_star_label') :
+                    t('confetti_snow_label')
+                  }</span>
                 </div>
               </div>
 
               {/* Info Box */}
               <div className="preview-info-box">
                 <div className="info-item">
-                  <span className="info-label">Gönderen:</span>
-                  <span className="info-value">{formData.senderName || 'Belirtilmedi'}</span>
+                  <span className="info-label">{t('sender_info')}</span>
+                  <span className="info-value">{formData.senderName || t('not_specified')}</span>
                 </div>
                 <div className="info-item">
-                  <span className="info-label">Alıcı:</span>
-                  <span className="info-value">{formData.recipientName || 'Belirtilmedi'}</span>
+                  <span className="info-label">{t('recipient_info')}</span>
+                  <span className="info-value">{formData.recipientName || t('not_specified')}</span>
                 </div>
                 <div className="info-item">
-                  <span className="info-label">Renkler:</span>
+                  <span className="info-label">{t('colors_info')}</span>
                   <div style={{ display: 'flex', gap: '4px' }}>
-                    <div style={{ width: '20px', height: '20px', borderRadius: '4px', backgroundColor: formData.backgroundColor, border: '1px solid rgba(255,255,255,0.3)' }} title="Arkaplan" />
-                    <div style={{ width: '20px', height: '20px', borderRadius: '4px', backgroundColor: formData.cakeColor, border: '1px solid rgba(255,255,255,0.3)' }} title="Pasta" />
-                    <div style={{ width: '20px', height: '20px', borderRadius: '4px', backgroundColor: formData.envelopeColor, border: '1px solid rgba(255,255,255,0.3)' }} title="Zarf" />
-                    <div style={{ width: '20px', height: '20px', borderRadius: '4px', backgroundColor: formData.confettiColor, border: '1px solid rgba(255,255,255,0.3)' }} title="Konfeti" />
+                    <div style={{ width: '20px', height: '20px', borderRadius: '4px', backgroundColor: formData.backgroundColor, border: '1px solid rgba(255,255,255,0.3)' }} title={t('background_tooltip')} />
+                    <div style={{ width: '20px', height: '20px', borderRadius: '4px', backgroundColor: formData.cakeColor, border: '1px solid rgba(255,255,255,0.3)' }} title={t('cake_tooltip')} />
+                    <div style={{ width: '20px', height: '20px', borderRadius: '4px', backgroundColor: formData.envelopeColor, border: '1px solid rgba(255,255,255,0.3)' }} title={t('envelope_tooltip')} />
+                    <div style={{ width: '20px', height: '20px', borderRadius: '4px', backgroundColor: formData.confettiColor, border: '1px solid rgba(255,255,255,0.3)' }} title={t('confetti_tooltip')} />
                   </div>
                 </div>
               </div>

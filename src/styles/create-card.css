@@ -44,6 +44,43 @@
   margin-bottom: 28px;
 }
 
+.lang-switch-container {
+  display: flex;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  padding: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 0;
+}
+
+.lang-btn {
+  background: transparent;
+  border: none;
+  color: #a8b3c7;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.lang-btn.active {
+  background: #ffffff;
+  color: #1a1a2e;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.lang-btn:hover:not(.active) {
+  color: #ffffff;
+}
+
+.lang-btn:active {
+  transform: scale(0.95);
+}
+
 .create-card-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
