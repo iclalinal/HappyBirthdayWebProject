@@ -9,16 +9,15 @@ import { getCard, type CardData } from '../services/cardService'
 import { useMicrophone } from '../hooks/useMicrophone'
 import '../styles.css'
 
-const themeBackgrounds: Record<CardData['theme'], string> = {
-  ocean: 'radial-gradient(circle at 20% 20%, rgba(86, 170, 255, 0.15), transparent 35%), radial-gradient(circle at 80% 10%, rgba(64, 193, 255, 0.18), transparent 30%), linear-gradient(135deg, #0b152e 0%, #0d1f3a 40%, #07101f 100%)',
-  sunset: 'radial-gradient(circle at 20% 20%, rgba(255, 190, 92, 0.18), transparent 35%), radial-gradient(circle at 80% 10%, rgba(255, 116, 92, 0.16), transparent 30%), linear-gradient(135deg, #1a0f1f 0%, #2b1230 40%, #381722 100%)',
-  lavender: 'radial-gradient(circle at 20% 20%, rgba(173, 149, 255, 0.18), transparent 35%), radial-gradient(circle at 80% 10%, rgba(125, 94, 255, 0.16), transparent 30%), linear-gradient(135deg, #130f1c 0%, #1c1327 40%, #23142b 100%)',
-}
-
-const themeColors: Record<CardData['theme'], string> = {
-  ocean: '#2b84ea',
-  sunset: '#f48c06',
-  lavender: '#9d4edd',
+// Generate dynamic background based on hex color
+const getDynamicBackground = (hexColor: string): string => {
+  // Convert hex to rgb for opacity control
+  const hex = hexColor.replace('#', '')
+  const r = parseInt(hex.substring(0, 2), 16)
+  const g = parseInt(hex.substring(2, 4), 16)
+  const b = parseInt(hex.substring(4, 6), 16)
+  
+  return `radial-gradient(circle at 20% 20%, rgba(${r}, ${g}, ${b}, 0.18), transparent 35%), radial-gradient(circle at 80% 10%, rgba(${r}, ${g}, ${b}, 0.16), transparent 30%), linear-gradient(135deg, #0b152e 0%, #0d1f3a 40%, #07101f 100%)`
 }
 
 const ConfettiLayer = ({ type, themeColor }: { type: CardData['confettiType']; themeColor: string }) => {
@@ -73,15 +72,19 @@ export default function ViewCard() {
     }
   }, [id])
 
-  const containerStyle = card ? { background: themeBackgrounds[card.theme] } : undefined
+  // Use dynamic colors from card data
+  const backgroundColor = card?.backgroundColor || '#1e3a5f'
+  const cakeColor = card?.cakeColor || '#4a90e2'
+  const envelopeColor = card?.envelopeColor || '#2c5aa0'
+  const confettiColor = card?.confettiColor || '#87ceeb'
+  
+  const containerStyle = { background: getDynamicBackground(backgroundColor) }
   const messages = card?.message ? card.message.split('\n').filter(Boolean) : []
   const signedMessages = card ? [...messages, `- ${card.senderName}`] : messages
-  const themeClass = card ? `theme-${card.theme}` : 'theme-ocean'
-  const themeColor = card ? themeColors[card.theme] : themeColors.ocean
 
   if (loading) {
     return (
-      <div className={`app view-card ${themeClass}`} style={{ background: themeBackgrounds.ocean }}>
+      <div className="app view-card" style={{ background: getDynamicBackground('#1e3a5f') }}>
         <div className="center-state">
           <div className="loading-spinner"></div>
         </div>
@@ -91,7 +94,7 @@ export default function ViewCard() {
 
   if (error) {
     return (
-      <div className={`app view-card ${themeClass}`} style={{ background: themeBackgrounds.ocean }}>
+      <div className="app view-card" style={{ background: getDynamicBackground('#1e3a5f') }}>
         <div className="center-state error-state">{error}</div>
       </div>
     )
@@ -102,7 +105,7 @@ export default function ViewCard() {
   }
 
   return (
-    <div className={`app view-card ${themeClass}`} style={containerStyle}>
+    <div className="app view-card" style={containerStyle}>
       {card && showOverlay && (
         <div
           className="overlay"
@@ -116,7 +119,7 @@ export default function ViewCard() {
         </div>
       )}
 
-      {card && showConfetti && <ConfettiLayer type={card.confettiType} themeColor={themeColor} />}
+      {card && showConfetti && <ConfettiLayer type={card.confettiType} themeColor={confettiColor} />}
 
       <div className="view-card-stage">
         {showCake && (
@@ -128,13 +131,13 @@ export default function ViewCard() {
               setShowConfetti(true)
               setTimeout(() => setShowEnvelope(true), 3000)
             }}
-            themeColor={themeColor}
+            themeColor={cakeColor}
           />
         )}
 
         {showEnvelope && (
           <Envelope
-            themeColor={themeColor}
+            themeColor={envelopeColor}
             message={signedMessages.length ? signedMessages : [card.message, `- ${card.senderName}`]}
           />
         )}
