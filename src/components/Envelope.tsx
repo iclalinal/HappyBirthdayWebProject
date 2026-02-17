@@ -1,15 +1,14 @@
-import { useEffect, useState } from 'react';
-import CardBook from './CardBook';
+import { useEffect, useState, type ReactNode } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import '../styles/envelope.css';
 
 interface EnvelopeProps {
   onOpen?: () => void;
   themeColor?: string;
-  message?: string[];
+  renderBook?: ReactNode;
 }
 
-export default function Envelope({ onOpen, themeColor, message = [] }: EnvelopeProps) {
+export default function Envelope({ onOpen, themeColor, renderBook }: EnvelopeProps) {
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -90,7 +89,7 @@ export default function Envelope({ onOpen, themeColor, message = [] }: EnvelopeP
       </div>
     ) : (
       <div className="card-reveal">
-        <CardBook message={message} />
+        {renderBook}
       </div>
     )}
   </div>
