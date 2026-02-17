@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Cake from '../components/Cake'
 import Envelope from '../components/Envelope'
+import CardBook from '../components/CardBook'
 import HeartConfetti from '../components/HeartConfetti'
 import StarConfetti from '../components/StarConfetti'
 import SnowConfetti from '../components/SnowConfetti'
 import { getCard, type CardData } from '../services/cardService'
 import { useMicrophone } from '../hooks/useMicrophone'
 import { useLanguage } from '../context/LanguageContext'
+import { splitMessageToPages } from '../utils/paginateMessage'
 import '../styles.css'
 
 // Generate dynamic background based on hex color
@@ -84,8 +86,8 @@ export default function ViewCard() {
   const confettiColor = card?.confettiColor || '#87ceeb'
   
   const containerStyle = { background: getDynamicBackground(backgroundColor) }
-  const messages = card?.message ? card.message.split('\n').filter(Boolean) : []
-  const signedMessages = card ? [...messages, `- ${card.senderName}`] : messages
+  const rawMessage = card ? `${card.message}\n\n- ${card.senderName}` : ''
+  const paginatedMessages = splitMessageToPages(rawMessage, 5) || [[]]
 
   if (loading) {
     return (
@@ -144,7 +146,7 @@ export default function ViewCard() {
         {showEnvelope && (
           <Envelope
             themeColor={envelopeColor}
-            message={signedMessages.length ? signedMessages : [card.message, `- ${card.senderName}`]}
+            renderBook={<CardBook messages={paginatedMessages} />}
           />
         )}
       </div>
